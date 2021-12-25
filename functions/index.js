@@ -1,18 +1,17 @@
+// Initialize Firebase
 const functions = require("firebase-functions");
-// The Firebase Admin SDK to access Firestore.
 const admin = require("firebase-admin");
 admin.initializeApp();
 
-// Take the text parameter passed to this HTTP endpoint and insert it into
-// Firestore under the path /messages/:documentId/original
-exports.addMessage = functions.https.onRequest(async (req, res) => {
-  // Grab the text parameter.
+//Retrieve the temperature from the request and stick it to firebase along with timestamp.
+exports.addTemperature = functions.https.onRequest(async (req, res) => {
+  // Grab the temperature parameter.
   const temperature = req.query.temp;
-  // Push the new message into Firestore using the Firebase Admin SDK.
+  // Push the new temperature to Firebase database
   const writeResult = await admin.firestore().collection("temperatures").add({
     temperature,
     timestamp: admin.firestore.FieldValue.serverTimestamp(),
   });
-  // Send back a message that we've successfully written the message
+  // Send back a message that we've successfully logged the temperature.
   res.json({ result: `New temperature logged.` });
 });
